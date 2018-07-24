@@ -3,14 +3,15 @@ import datetime
 
 
 class Endpoint(models.Model):
+    name = models.TextField()
     development = models.TextField()
     staging = models.TextField()
     integration = models.TextField()
     preproduction = models.TextField()
     production = models.TextField()
 
-    def __unicode__(self):
-        return "%s" % (self.development)
+    def __str__(self):
+       return self.name
 
 class Team(models.Model):
     creation_date = models.DateTimeField(default=datetime.datetime.now)
@@ -20,8 +21,8 @@ class Team(models.Model):
     manager = models.TextField()
     slackroom = models.TextField()
 
-    def __unicode__(self):
-        return "%s" % (self.name)
+    def __str__(self):
+       return "{} by {}".format(self.name, self.manager)
 
 class Project(models.Model):
     creation_date = models.DateTimeField(default=datetime.datetime.now)
@@ -33,22 +34,22 @@ class Project(models.Model):
     project_dependent_by = models.ForeignKey('self', null=True, on_delete=models.CASCADE, related_name='project_self_referential_by_fk')
     team = models.ForeignKey(Team, related_name = 'teams', on_delete=models.CASCADE)
 
-    def __unicode__(self):
-        return self.name
+    def __str__(self):
+       return self.name
 
 class Environment(models.Model):
     creation_date = models.DateTimeField(default=datetime.datetime.now)
     name = models.CharField(max_length=200)
     description = models.TextField()
 
-    def __unicode__(self):
-        return "%s (%s)" % (self.name, self.project)
+    def __str__(self):
+        return "%s" % (self.name)
 
 class Status(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 class Event(models.Model):
@@ -65,5 +66,5 @@ class Event(models.Model):
     environment = models.ForeignKey(Environment, related_name = 'events', on_delete=models.CASCADE)
     status = models.ForeignKey(Status, blank=True, null=True, related_name = 'events', on_delete=models.CASCADE)
 
-    def __unicode__(self):
-        return "%s (%s)" % (self.subject, self.message)
+    def __str__(self):
+        return "%s Version: %s %s" % (self.project, self.version_released, self.status)
