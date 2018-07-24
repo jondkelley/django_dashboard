@@ -7,15 +7,16 @@ from django.contrib import admin
 admin.autodiscover()
 
 from tastypie.api import Api
-from restapi.api import EndpointResource, TeamResource, ProjectResource, EnvironmentResource, EventResource, StatusResource
+from restapi.api import EndpointResource, TeamResource, ProjectResource, EnvironmentResource, ReleaseResource, ReleaseTypeResource, StatusResource
 
 v1_api = Api(api_name='v1')
 v1_api.register(EndpointResource())
 v1_api.register(TeamResource())
 v1_api.register(ProjectResource())
 v1_api.register(EnvironmentResource())
-v1_api.register(EventResource())
+v1_api.register(ReleaseResource())
 v1_api.register(StatusResource())
+v1_api.register(ReleaseTypeResource())
 
 urlpatterns = [
     # Examples:

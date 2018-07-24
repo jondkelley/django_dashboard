@@ -1,9 +1,10 @@
 from tastypie.resources import ModelResource
-from restapi.models import Endpoint, Team, Project, Environment, Status, Event
+from restapi.models import Endpoint, Team, Project, Platform, Environment, Status, Release, ReleaseType
 from tastypie.authorization import Authorization
 from tastypie import fields
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 
+# 
 class EndpointResource(ModelResource):
     class Meta:
         queryset = Endpoint.objects.all()
@@ -42,11 +43,26 @@ class TeamResource(ModelResource):
             'slackroom': ALL_WITH_RELATIONS,
         }
 
+class PlatformResource(ModelResource):
+    class Meta:
+        queryset = Platform.objects.all()
+        resource_name = 'platforms'
+        authorization= Authorization()
+        always_return_data = True
+
+        ordering = ['name', '-name']
+
+        filtering = {
+            'name': ALL_WITH_RELATIONS,
+            'description': ALL_WITH_RELATIONS,
+        }
+
 class ProjectResource(ModelResource):
     team = fields.ForeignKey(TeamResource, 'team', full=True)
     # self-referential foreign keys
     dependecies_downstream = fields.ToManyField('self', 'project_self_referential_on_fk', null=True)
     dependecies_upstream = fields.ToManyField('self', 'project_self_referential_by_fk', null=True)
+    platform = fields.ForeignKey(PlatformResource, 'platform', null=True, full=True)
     endpoint = fields.ForeignKey(EndpointResource, 'endpoint', null=True, full=True)
     class Meta:
         queryset = Project.objects.all()
@@ -62,6 +78,7 @@ class ProjectResource(ModelResource):
             'creation_date': ALL_WITH_RELATIONS,
             'git_repo': ALL_WITH_RELATIONS,
             'endpoint': ALL_WITH_RELATIONS,
+            'platform': ALL_WITH_RELATIONS,
             'team': ALL_WITH_RELATIONS,
             'dependecies_downstream': ALL_WITH_RELATIONS,
             'dependecies_upstream': ALL_WITH_RELATIONS,
@@ -97,14 +114,28 @@ class StatusResource(ModelResource):
             'description': ALL_WITH_RELATIONS,
         }
 
-class EventResource(ModelResource):
+class ReleaseTypeResource(ModelResource):
+    class Meta:
+        queryset = ReleaseType.objects.all()
+        resource_name = 'releasetypes'
+        authorization= Authorization()
+        always_return_data = True
+
+        ordering = ['name', '-name']
+        filtering = {
+            'name': ALL_WITH_RELATIONS,
+            'description': ALL_WITH_RELATIONS
+        }
+
+class ReleaseResource(ModelResource):
     environment = fields.ForeignKey(EnvironmentResource, 'environment', full=True)
     status = fields.ForeignKey(StatusResource, 'status', null=True, blank=True)
     project = fields.ForeignKey(ProjectResource, 'project', full=True)
+    releasetype = fields.ForeignKey(ReleaseTypeResource, 'releasetype', full=True)
 
     class Meta:
-        queryset = Event.objects.all()
-        resource_name = 'events'
+        queryset = Release.objects.all()
+        resource_name = 'releases'
         authorization= Authorization()
         always_return_data = True
 
