@@ -105,15 +105,16 @@ class EventResource(ModelResource):
 
         filtering = {
             'date': ALL,
-            'subject': ALL,
+            'headline': ALL,
             'message': ALL,
             'status': ALL,
             'environment': ALL_WITH_RELATIONS,
-            'release_version': ALL,
-            'previous_version': ALL,
-            'deploy_ticket_url': ALL,
-            'story_ticket_url': ALL,
-            'release_tav': ALL,
+            'version_buildmap_tag': ALL,
+            'version_released': ALL,
+            'version_previous': ALL,
+            'version_tag': ALL,
+            'ticket_deploy_url': ALL,
+            'ticket_story_url': ALL,
             'project': ALL_WITH_RELATIONS,
         }
 
