@@ -4,8 +4,12 @@ from tastypie.authorization import Authorization
 from tastypie import fields
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 
-# 
+#
 class EndpointResource(ModelResource):
+    """
+    defines application endpoint information
+    environment specific details to connect to an endpoint
+    """
     class Meta:
         queryset = Endpoint.objects.all()
         resource_name = 'endpoints'
@@ -19,12 +23,12 @@ class EndpointResource(ModelResource):
             'integration': ALL_WITH_RELATIONS,
             'preproduction': ALL_WITH_RELATIONS,
             'production': ALL_WITH_RELATIONS,
-            'webapp_warmup_url': ALL_WITH_RELATIONS,
-            'webapp_health_url': ALL_WITH_RELATIONS,
-            'webapp_stats_url': ALL_WITH_RELATIONS,
         }
 
 class TeamResource(ModelResource):
+    """
+    defines an dev team associated with a ProjectResource
+    """
     class Meta:
         queryset = Team.objects.all()
         resource_name = 'teams'
@@ -44,6 +48,10 @@ class TeamResource(ModelResource):
         }
 
 class PlatformResource(ModelResource):
+    """
+    defines a platform a ProjectResource lives on
+    examples: aws lambda, ec2, rackspace VM, rackspace physical, azure
+    """
     class Meta:
         queryset = Platform.objects.all()
         resource_name = 'platforms'
@@ -58,6 +66,9 @@ class PlatformResource(ModelResource):
         }
 
 class ProjectResource(ModelResource):
+    """
+    defines an project resource and dependecies
+    """
     team = fields.ForeignKey(TeamResource, 'team', full=True)
     # self-referential foreign keys
     dependecies_downstream = fields.ToManyField('self', 'project_self_referential_on_fk', null=True)
@@ -88,6 +99,9 @@ class ProjectResource(ModelResource):
         }
 
 class EnvironmentResource(ModelResource):
+    """
+    defines a project environment such as dev, staging, prod
+    """
     class Meta:
         queryset = Environment.objects.all()
         resource_name = 'environments'
@@ -103,6 +117,10 @@ class EnvironmentResource(ModelResource):
         }
 
 class StatusResource(ModelResource):
+    """
+    defines a release status
+    such as deployed, in test, pending deployment, draft
+    """
     class Meta:
         queryset = Status.objects.all()
         resource_name = 'statuses'
@@ -115,6 +133,10 @@ class StatusResource(ModelResource):
         }
 
 class ReleaseTypeResource(ModelResource):
+    """
+    defines a release type such as config change, security patch,
+    feature deployment, bugfix, etc
+    """
     class Meta:
         queryset = ReleaseType.objects.all()
         resource_name = 'releasetypes'
@@ -128,6 +150,10 @@ class ReleaseTypeResource(ModelResource):
         }
 
 class ReleaseResource(ModelResource):
+    """
+    defines a release, this is a log to track releases and their status, purpose
+    origns, stories, and deployment tickets
+    """
     environment = fields.ForeignKey(EnvironmentResource, 'environment', full=True)
     status = fields.ForeignKey(StatusResource, 'status', null=True, blank=True)
     project = fields.ForeignKey(ProjectResource, 'project', full=True)

@@ -1,22 +1,31 @@
 from django.db import models
 import datetime
 
+class ScalaProject(models.Model):
+
+    def __str__(self):
+       return self.name
+
 
 class Endpoint(models.Model):
+    """
+    defines application endpoint information
+    environment specific details to connect to an endpoint
+    """
     name = models.CharField(max_length=255)
     development = models.CharField(max_length=255)
     staging = models.CharField(max_length=255)
     integration = models.CharField(max_length=255)
     preproduction = models.CharField(max_length=255)
     production = models.CharField(max_length=255)
-    webapp_warmup_url = models.CharField(max_length=1024)
-    webapp_health_url = models.CharField(max_length=1024)
-    webapp_stats_url = models.CharField(max_length=1024)
 
     def __str__(self):
        return self.name
 
 class Team(models.Model):
+    """
+    defines an dev team associated with a ProjectResource
+    """
     creation_date = models.DateTimeField(default=datetime.datetime.now)
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
@@ -30,6 +39,10 @@ class Team(models.Model):
        return "{} by {}".format(self.name, self.manager)
 
 class Platform(models.Model):
+    """
+    defines a platform a ProjectResource lives on
+    examples: aws lambda, ec2, rackspace VM, rackspace physical, azure
+    """
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
 
@@ -37,6 +50,9 @@ class Platform(models.Model):
         return "%s" % (self.name)
 
 class Project(models.Model):
+    """
+    defines an project resource and dependecies
+    """
     creation_date = models.DateTimeField(default=datetime.datetime.now)
     name = models.CharField(max_length=200)
     description = models.TextField()
@@ -51,6 +67,9 @@ class Project(models.Model):
        return self.name
 
 class Environment(models.Model):
+    """
+    defines a project environment such as dev, staging, prod
+    """
     creation_date = models.DateTimeField(default=datetime.datetime.now)
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
@@ -59,6 +78,10 @@ class Environment(models.Model):
         return "%s" % (self.name)
 
 class Status(models.Model):
+    """
+    defines a release status
+    such as deployed, in test, pending deployment, draft
+    """
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
 
@@ -66,6 +89,10 @@ class Status(models.Model):
         return self.name
 
 class ReleaseType(models.Model):
+    """
+    defines a release type such as config change, security patch,
+    feature deployment, bugfix, etc
+    """
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
 
@@ -73,6 +100,10 @@ class ReleaseType(models.Model):
         return self.name
 
 class Release(models.Model):
+    """
+    defines a release, this is a log to track releases and their status, purpose
+    origns, stories, and deployment tickets
+    """
     date = models.DateTimeField(default=datetime.datetime.now)
     headline = models.CharField(max_length=200)
     message = models.TextField(blank=True)
