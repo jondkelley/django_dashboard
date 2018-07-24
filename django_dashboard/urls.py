@@ -1,4 +1,6 @@
-from django.conf.urls import patterns, include, url
+#from django.conf.urls import patterns, include, url
+#from django.conf.urls.defaults import *
+from django.conf.urls  import *
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -13,7 +15,7 @@ v1_api.register(EnvironmentResource())
 v1_api.register(EventResource())
 v1_api.register(StatusResource())
 
-urlpatterns = patterns('',
+urlpatterns = [
     # Examples:
     # url(r'^$', 'django_dashboard.views.home', name='home'),
     # url(r'^django_dashboard/', include('django_dashboard.foo.urls')),
@@ -24,5 +26,5 @@ urlpatterns = patterns('',
     url(r'^api/', include(v1_api.urls)),
 
     # Uncomment the next line to enable the admin:
-    url(r'^admin/', include(admin.site.urls)),
-)
+    url(r'^admin/', admin.site.urls),
+]
