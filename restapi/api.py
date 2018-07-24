@@ -1,17 +1,38 @@
 from tastypie.resources import ModelResource
-from restapi.models import Project, Environment, Status, Event
+from restapi.models import Team, Project, Environment, Status, Event
 from tastypie.authorization import Authorization
 from tastypie import fields
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 
+
+class TeamResource(ModelResource):
+    class Meta:
+        queryset = Team.objects.all()
+        resource_name = 'teams'
+        authorization= Authorization()
+        always_return_data = True
+
+        ordering = ['creation_date', '-creation_date', "name", "-name"]
+
+        filtering = {
+            'name': ALL_WITH_RELATIONS,
+            'description': ALL_WITH_RELATIONS,
+            'email': ALL_WITH_RELATIONS,
+            'manager': ALL_WITH_RELATIONS,
+            'slackroom': ALL_WITH_RELATIONS,
+        }
+
+
 class ProjectResource(ModelResource):
+    team = fields.ForeignKey(TeamResource, 'team', full=True)
+    # self-referential foreign keys
+    dependecies_downstream = fields.ToManyField('self', 'project_self_referential_on_fk', null=True)
+    dependecies_upstream = fields.ToManyField('self', 'project_self_referential_by_fk', null=True)
     class Meta:
         queryset = Project.objects.all()
         resource_name = 'projects'
         authorization= Authorization()
         always_return_data = True
-        dependent_on = fields.ToManyField('restapi.api.ProjectResource', 'project_dependent_on_fk')
-        dependent_by = fields.ToManyField('restapi.api.ProjectResource', 'project_dependent_by_fk')
 
         ordering = ['creation_date', '-creation_date', "name", "-name"]
 
@@ -20,14 +41,16 @@ class ProjectResource(ModelResource):
             'description': ALL_WITH_RELATIONS,
             'creation_date': ALL_WITH_RELATIONS,
             'git_repo': ALL_WITH_RELATIONS,
-            'sprint_team': ALL_WITH_RELATIONS,
-            'dependent_on': ALL_WITH_RELATIONS,
-            'dependent_by': ALL_WITH_RELATIONS,
+            'team': ALL_WITH_RELATIONS,
+            'dependecies_downstream': ALL_WITH_RELATIONS,
+            'dependecies_upstream': ALL_WITH_RELATIONS,
+            'endpoint_production': ALL_WITH_RELATIONS,
+            'endpoint_staging': ALL_WITH_RELATIONS,
+            'endpoint_dev':  ALL_WITH_RELATIONS,
         }
 
 
 class EnvironmentResource(ModelResource):
-    project = fields.ForeignKey(ProjectResource, 'project', full=True)
     class Meta:
         queryset = Environment.objects.all()
         resource_name = 'environments'
@@ -39,7 +62,6 @@ class EnvironmentResource(ModelResource):
         filtering = {
             'name': ALL_WITH_RELATIONS,
             'description': ALL_WITH_RELATIONS,
-            'project': ALL_WITH_RELATIONS,
             'creation_date': ALL_WITH_RELATIONS,
         }
 
@@ -58,6 +80,7 @@ class StatusResource(ModelResource):
 class EventResource(ModelResource):
     environment = fields.ForeignKey(EnvironmentResource, 'environment', full=True)
     status = fields.ForeignKey(StatusResource, 'status', null=True, blank=True)
+    project = fields.ForeignKey(ProjectResource, 'project', full=True)
 
     class Meta:
         queryset = Event.objects.all()
@@ -73,7 +96,10 @@ class EventResource(ModelResource):
             'environment': ALL_WITH_RELATIONS,
             'release_version': ALL,
             'previous_version': ALL,
+            'deploy_ticket_url': ALL,
+            'story_ticket_url': ALL,
             'release_tav': ALL,
+            'project': ALL_WITH_RELATIONS,
         }
 
         ordering = ['date', '-date']

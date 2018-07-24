@@ -1,2 +1,4 @@
 *.pyc
 .*swp
+restapi/migrations/*
+sqlite_file
