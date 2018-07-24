@@ -18,6 +18,9 @@ class EndpointResource(ModelResource):
             'integration': ALL_WITH_RELATIONS,
             'preproduction': ALL_WITH_RELATIONS,
             'production': ALL_WITH_RELATIONS,
+            'webapp_warmup_url': ALL_WITH_RELATIONS,
+            'webapp_health_url': ALL_WITH_RELATIONS,
+            'webapp_stats_url': ALL_WITH_RELATIONS,
         }
 
 class TeamResource(ModelResource):
@@ -34,6 +37,8 @@ class TeamResource(ModelResource):
             'description': ALL_WITH_RELATIONS,
             'email': ALL_WITH_RELATIONS,
             'manager': ALL_WITH_RELATIONS,
+            'team_lead': ALL_WITH_RELATIONS,
+            'senior_contact': ALL_WITH_RELATIONS,
             'slackroom': ALL_WITH_RELATIONS,
         }
 
