@@ -2,6 +2,16 @@ from django.db import models
 import datetime
 
 
+class Endpoint(models.Model):
+    development = models.TextField()
+    staging = models.TextField()
+    integration = models.TextField()
+    preproduction = models.TextField()
+    production = models.TextField()
+
+    def __unicode__(self):
+        return "%s" % (self.development)
+
 class Team(models.Model):
     creation_date = models.DateTimeField(default=datetime.datetime.now)
     name = models.CharField(max_length=200)
@@ -11,16 +21,14 @@ class Team(models.Model):
     slackroom = models.TextField()
 
     def __unicode__(self):
-        return "%s (%s)" % (self.name, self.project)
+        return "%s" % (self.name)
 
 class Project(models.Model):
     creation_date = models.DateTimeField(default=datetime.datetime.now)
     name = models.CharField(max_length=200)
     description = models.TextField()
     git_repo = models.URLField()
-    endpoint_dev = models.TextField()
-    endpoint_staging = models.TextField()
-    endpoint_production = models.TextField()
+    endpoint = models.ForeignKey(Endpoint, null=True, related_name='endpoints', on_delete=models.CASCADE)
     project_dependent_on = models.ForeignKey('self', null=True, on_delete=models.CASCADE, related_name='project_self_referential_on_fk')
     project_dependent_by = models.ForeignKey('self', null=True, on_delete=models.CASCADE, related_name='project_self_referential_by_fk')
     team = models.ForeignKey(Team, related_name = 'teams', on_delete=models.CASCADE)

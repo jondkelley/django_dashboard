@@ -7,9 +7,10 @@ from django.contrib import admin
 admin.autodiscover()
 
 from tastypie.api import Api
-from restapi.api import TeamResource, ProjectResource, EnvironmentResource, EventResource, StatusResource
+from restapi.api import EndpointResource, TeamResource, ProjectResource, EnvironmentResource, EventResource, StatusResource
 
 v1_api = Api(api_name='v1')
+v1_api.register(EndpointResource())
 v1_api.register(TeamResource())
 v1_api.register(ProjectResource())
 v1_api.register(EnvironmentResource())

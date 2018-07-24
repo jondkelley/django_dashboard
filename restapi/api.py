@@ -1,9 +1,24 @@
 from tastypie.resources import ModelResource
-from restapi.models import Team, Project, Environment, Status, Event
+from restapi.models import Endpoint, Team, Project, Environment, Status, Event
 from tastypie.authorization import Authorization
 from tastypie import fields
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 
+class EndpointResource(ModelResource):
+    class Meta:
+        queryset = Endpoint.objects.all()
+        resource_name = 'endpoints'
+        authorization= Authorization()
+        always_return_data = True
+
+        ordering = ['development', '-development']
+        filtering = {
+            'development': ALL_WITH_RELATIONS,
+            'staging': ALL_WITH_RELATIONS,
+            'integration': ALL_WITH_RELATIONS,
+            'preproduction': ALL_WITH_RELATIONS,
+            'production': ALL_WITH_RELATIONS,
+        }
 
 class TeamResource(ModelResource):
     class Meta:
@@ -22,12 +37,12 @@ class TeamResource(ModelResource):
             'slackroom': ALL_WITH_RELATIONS,
         }
 
-
 class ProjectResource(ModelResource):
     team = fields.ForeignKey(TeamResource, 'team', full=True)
     # self-referential foreign keys
     dependecies_downstream = fields.ToManyField('self', 'project_self_referential_on_fk', null=True)
     dependecies_upstream = fields.ToManyField('self', 'project_self_referential_by_fk', null=True)
+    endpoint = fields.ForeignKey(EndpointResource, 'endpoint', null=True, full=True)
     class Meta:
         queryset = Project.objects.all()
         resource_name = 'projects'
@@ -41,6 +56,7 @@ class ProjectResource(ModelResource):
             'description': ALL_WITH_RELATIONS,
             'creation_date': ALL_WITH_RELATIONS,
             'git_repo': ALL_WITH_RELATIONS,
+            'endpoint': ALL_WITH_RELATIONS,
             'team': ALL_WITH_RELATIONS,
             'dependecies_downstream': ALL_WITH_RELATIONS,
             'dependecies_upstream': ALL_WITH_RELATIONS,
@@ -48,7 +64,6 @@ class ProjectResource(ModelResource):
             'endpoint_staging': ALL_WITH_RELATIONS,
             'endpoint_dev':  ALL_WITH_RELATIONS,
         }
-
 
 class EnvironmentResource(ModelResource):
     class Meta:
