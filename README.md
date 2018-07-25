@@ -1,5 +1,7 @@
 ## REST API, based on django, to implement a Release Dashboard API for your dev team
 
+Requires Python 3
+
 The frontend is truly up to yourself, as the features and considerations of a frontend are very organization or company-specific considerations. You might also wish to integrate this tooling with your existing technology of choice.
 
 This project provides a REST API to create/read/update/delete:
