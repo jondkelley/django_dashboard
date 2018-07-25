@@ -1,10 +1,16 @@
-## REST API, based on django, to implement a Release Dashboard
+## REST API, based on django, to implement a Release Dashboard API for your dev team
+
+The frontend is truly up to yourself, as the features and considerations of a frontend are very organization or company-specific considerations. You might also wish to integrate this tooling with your existing technology of choice.
 
 This project provides a REST API to create/read/update/delete:
 * Projects
 * Environments
-* Events
+* Releases
 * Statuses
+* Endpoints
+* Teams
+* Platforms
+* ReleaseTypes
 
 Installation:
 -------------
@@ -25,4 +31,4 @@ Installation:
 
 REST API schema is then available at [http://localhost:8000/api/v1](http://localhost:8000/api/v1)
 
-For a more traditional documentation you can read [restapi.md](https://github.com/sebbrochet/django_dashboard/blob/master/restapi.md)
+For a more traditional documentation you can read [restapi.md](https://github.com/jondkelley/oss_release_api/blob/master/restapi.md)
